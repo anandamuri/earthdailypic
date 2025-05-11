@@ -1,4 +1,4 @@
-# 🌍 EPIC Earth Image of the Day
+# 🌍 Earth Image of the Day
 
 This repository updates daily with the latest Earth image from NASA's EPIC API.
 
