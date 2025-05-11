@@ -11,19 +11,24 @@ def fetch_epic_image():
     # Get metadata
     meta_url = f"https://api.nasa.gov/EPIC/api/natural/date/{date_str}?api_key={API_KEY}"
     response = requests.get(meta_url)
+    response = requests.get(meta_url)
+
     if response.status_code != 200:
-        print(f"Failed to fetch metadata: {response.status_code}")
+        print(f"Failed to fetch metadata. Status: {response.status_code}")
+        print(response.text)
         return
 
     try:
         data = response.json()
     except Exception as e:
-        print(f"Error parsing JSON: {e}")
+        print(f"Error decoding JSON: {e}")
         return
 
-    if not data:
-        print(f"No EPIC image found for date {date_str}.")
+    # Make sure it's a list and has at least one entry
+    if not isinstance(data, list) or not data:
+        print(f"No image data available for {date_str}. Response was: {data}")
         return
+
 
 
     image_name = data[0]['image']
