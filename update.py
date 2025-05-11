@@ -1,7 +1,7 @@
 import requests
 import datetime
 import os
-from datetime import datetime as dt
+from datetime import datetime, timezone
 
 API_KEY = os.getenv("NASA_API_KEY", "DEMO_KEY")
 
@@ -41,9 +41,12 @@ def fetch_epic_image():
 **Image Name:** {image_name}
 
 Metadata:
-```json{str(data[0])}
-📸 Image provided by NASA EPIC API
-🕒 Last updated: {dt.utcnow().isoformat()} UTC
+```json
+{data[0]}
+```
+
+📸 Image provided by NASA EPIC API  
+🕒 Last updated: {datetime.now(timezone.utc).isoformat()}
 """)
 
 if __name__ == "__main__":
