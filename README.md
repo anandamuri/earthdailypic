@@ -2,15 +2,9 @@
 
 This repository updates daily with the latest image of Earth taken by NASA's [EPIC Camera](https://epic.gsfc.nasa.gov/) on the DSCOVR satellite.
 
-## 🗓️ Today's Image (2025-05-11)
+## 🗓️ Today's Image
 
-![Earth Image](https://epic.gsfc.nasa.gov/archive/natural/2025/05/11/jpg/epic_1b_20250511001509.jpg)
-
-**📍 Location:** Lagrange Point 1 (L1) — 1 million miles from Earth  
-**📷 Instrument:** EPIC (Earth Polychromatic Imaging Camera)  
-**🕒 Last updated:** 2025-05-11T10:00:01Z
-
----
+*(This section is auto-filled every day)*
 
 ## 📂 Archive
 
@@ -30,6 +24,3 @@ Past images are stored in the [/history](./history) folder, named by date (e.g.,
 ## 📡 Data Source
 
 [NASA EPIC API](https://epic.gsfc.nasa.gov/about/api)
-
----
-

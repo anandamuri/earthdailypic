@@ -1,4 +1,4 @@
-name: Daily EPIC Update
+name: Daily EPIC Earth Update
 
 on:
   schedule:
@@ -14,21 +14,96 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+      - name: Setup Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@users.noreply.github.com'
 
-      - name: Install Requests
-        run: pip install requests
+      - name: Create Update Script
+        run: |
+          cat > update.sh << 'ENDSCRIPT'
+          #!/bin/bash
+          set -e
 
-      - name: Run EPIC Update Script
-        run: python update_epic.py
+          echo "Fetching EPIC metadata..."
+          NASA_API_KEY="${{ secrets.NASA_API_KEY }}"
+          DATE=$(date -u -d "2 days ago" +%Y-%m-%d)
+          META_URL="https://api.nasa.gov/EPIC/api/natural/date/$DATE?api_key=$NASA_API_KEY"
+          META_JSON=$(curl -s "$META_URL")
+
+          IMAGE_NAME=$(echo "$META_JSON" | jq -r '.[0].image')
+          IMAGE_DATE=$(echo "$META_JSON" | jq -r '.[0].date' | cut -d " " -f1)
+
+          if [ -z "$IMAGE_NAME" ] || [ "$IMAGE_NAME" = "null" ]; then
+            echo "No image available. Writing fallback README."
+            echo "# 🌍 EPIC Earth Image of the Day" > README.md
+            echo "" >> README.md
+            echo "**Date:** $DATE" >> README.md
+            echo "" >> README.md
+            echo "⚠️ No image available for this date." >> README.md
+            echo "" >> README.md
+            echo "## Archive" >> README.md
+            echo "Images stored in the [/history](./history) folder." >> README.md
+            echo "" >> README.md
+            echo "🕒 Last updated: $(date -u)" >> README.md
+            echo "No image available." > update_log.txt
+            exit 0
+          fi
+
+          YEAR=$(echo $IMAGE_DATE | cut -d "-" -f1)
+          MONTH=$(echo $IMAGE_DATE | cut -d "-" -f2)
+          DAY=$(echo $IMAGE_DATE | cut -d "-" -f3)
+
+          IMAGE_URL="https://epic.gsfc.nasa.gov/archive/natural/$YEAR/$MONTH/$DAY/jpg/${IMAGE_NAME}.jpg"
+
+          mkdir -p history
+          curl -s -o image.jpg "$IMAGE_URL"
+          cp image.jpg "history/${IMAGE_DATE}.jpg"
+
+          echo "Writing README.md..."
+          echo "# 🌍 EPIC Earth Image of the Day" > README.md
+          echo "" >> README.md
+          echo "This repository updates daily with the latest image of Earth taken by NASA's [EPIC Camera](https://epic.gsfc.nasa.gov/) on the DSCOVR satellite." >> README.md
+          echo "" >> README.md
+          echo "## 🗓️ Today's Image ($IMAGE_DATE)" >> README.md
+          echo "" >> README.md
+          echo "![Earth Image]($IMAGE_URL)" >> README.md
+          echo "" >> README.md
+          echo "**📍 Location:** Lagrange Point 1 (L1) — 1 million miles from Earth  " >> README.md
+          echo "**📷 Instrument:** EPIC (Earth Polychromatic Imaging Camera)  " >> README.md
+          echo "**🕒 Last updated:** $(date -u)" >> README.md
+          echo "" >> README.md
+          echo "---" >> README.md
+          echo "" >> README.md
+          echo "## 📂 Archive" >> README.md
+          echo "" >> README.md
+          echo "Past images are stored in the [/history](./history) folder, named by date (e.g., \`2025-05-11.jpg\`)." >> README.md
+          echo "" >> README.md
+          echo "---" >> README.md
+          echo "" >> README.md
+          echo "## 🛠 How This Works" >> README.md
+          echo "" >> README.md
+          echo "- Fetches NASA's EPIC metadata daily using GitHub Actions" >> README.md
+          echo "- Downloads the latest image from 2 days ago (due to NASA's data delay)" >> README.md
+          echo "- Updates this README and logs the change" >> README.md
+          echo "- Auto-commits changes every morning at 5:00 AM EST (10:00 UTC)" >> README.md
+          echo "" >> README.md
+          echo "---" >> README.md
+          echo "" >> README.md
+          echo "## 📡 Data Source" >> README.md
+          echo "" >> README.md
+          echo "[NASA EPIC API](https://epic.gsfc.nasa.gov/about/api)" >> README.md
+
+          echo "Last updated: $(date -u)" > update_log.txt
+          ENDSCRIPT
+
+          chmod +x update.sh
+
+      - name: Run Update Script
+        run: ./update.sh
 
       - name: Commit and Push
         run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'you@example.com'
           git add .
           git commit -m "Daily EPIC update" || true
           git push
