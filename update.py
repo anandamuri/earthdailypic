@@ -30,7 +30,8 @@ def fetch_epic_image():
         update_log_no_image()
         return
 
-    year, month, day = DATE.strftime('%Y %m %d').split()
+    image_date = first_image.get('date', DATE_STR).split()[0]  # Format: 'YYYY-MM-DD'
+    year, month, day = image_date.split("-")
     image_url = f"https://epic.gsfc.nasa.gov/archive/natural/{year}/{month}/{day}/jpg/{image_name}.jpg"
     img_data = requests.get(image_url).content
 
@@ -42,7 +43,7 @@ def fetch_epic_image():
 
     with open("README.md", "w") as f:
         f.write(f"# 🌍 EPIC Earth Image of the Day\n\n")
-        f.write(f"**Date:** {DATE_STR}\n\n")
+        f.write(f"## 🗓️ Today's Image ({image_date})\n\n")
         f.write(f"![Earth Image]({image_url})\n\n")
         f.write("**📍 Location:** Lagrange Point 1 (L1) — 1 million miles from Earth  \n")
         f.write("**📷 Instrument:** EPIC (Earth Polychromatic Imaging Camera)  \n")
