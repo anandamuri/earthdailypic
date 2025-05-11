@@ -3,89 +3,51 @@ import os
 from datetime import datetime, timedelta, timezone
 
 API_KEY = os.getenv("NASA_API_KEY", "DEMO_KEY")
+DATE = (datetime.now(timezone.utc) - timedelta(days=2)).date()
+DATE_STR = DATE.strftime("%Y-%m-%d")
 
 def fetch_epic_image():
-    date = datetime.now().date() - timedelta(days=2)
-    date_str = date.strftime('%Y-%m-%d')
-
-    # Get metadata
-    meta_url = f"https://api.nasa.gov/EPIC/api/natural/date/{date_str}?api_key={API_KEY}"
+    meta_url = f"https://api.nasa.gov/EPIC/api/natural/date/{DATE_STR}?api_key={API_KEY}"
     response = requests.get(meta_url)
-
-    # Step 1: Ensure the request was successful
-    if response.status_code != 200:
-        print(f"Request failed: {response.status_code}")
-        print(response.text)
-        return
-
-    # Step 2: Parse JSON safely
+    
     try:
         data = response.json()
     except Exception as e:
         print(f"Failed to parse JSON: {e}")
         return
 
-    # Step 3: Ensure response is a list and has at least one item
-    if not isinstance(data, list) or len(data) == 0:
-        print(f"No EPIC image found for date {date_str}. Full response:\n{data}")
+    if not data:
+        print(f"No image found for {DATE_STR}")
         return
 
-
     image_name = data[0]['image']
-    image_url = f"https://epic.gsfc.nasa.gov/archive/natural/{date.year}/{date.strftime('%m')}/{date.strftime('%d')}/jpg/{image_name}.jpg"
-    explanation = data[0].get("caption", "Image captured by NASA's EPIC camera on DSCOVR.")
-    coords = data[0].get("centroid_coordinates", {})
-    lat = coords.get("lat", "N/A")
-    lon = coords.get("lon", "N/A")
+    year, month, day = DATE.strftime('%Y %m %d').split()
+    image_url = f"https://epic.gsfc.nasa.gov/archive/natural/{year}/{month}/{day}/jpg/{image_name}.jpg"
 
-    # Download and save image
     os.makedirs("history", exist_ok=True)
-    with open(f"history/{date_str}.jpg", "wb") as f:
-        f.write(requests.get(image_url).content)
+
+    # Save today's image
     with open("image.jpg", "wb") as f:
         f.write(requests.get(image_url).content)
 
-    # Create README.md content
+    # Archive image by date
+    with open(f"history/{DATE_STR}.jpg", "wb") as f:
+        f.write(requests.get(image_url).content)
+
+    # Update README
     with open("README.md", "w") as f:
-        f.write(f"""# 🌍 EPIC Earth Image of the Day
+        f.write(f"# 🌍 EPIC Earth Image of the Day\n\n")
+        f.write(f"**Date:** {DATE_STR}\n\n")
+        f.write(f"![Earth Image]({image_url})\n\n")
+        f.write(f"📸 Image name: `{image_name}.jpg`\n\n")
+        f.write(f"🕒 Last updated: {datetime.now(timezone.utc).isoformat()}\n\n")
+        f.write(f"## Archive\n")
+        f.write("Images stored in the [/history](./history) folder.\n")
 
-This repository demonstrates my ability to automate GitHub workflows using GitHub Actions, interact with external APIs, and format live content.
-
----
-
-## 📆 Date
-**{date_str}**
-
----
-
-## 🖼 Image
-![EPIC Earth Image]({image_url})
-
----
-
-## 📌 Metadata
-- **Image Name:** `{image_name}`
-- **Coordinates:** Latitude `{lat}`, Longitude `{lon}`
-- **Description:** {explanation}
-
----
-
-## 📡 About EPIC
-The EPIC camera (Earth Polychromatic Imaging Camera) aboard NOAA's DSCOVR satellite captures full-color images of the Earth from Lagrange Point 1 (L1), 1 million miles away. These images are delayed 12–36 hours for processing.
-
-- [NASA EPIC API](https://epic.gsfc.nasa.gov/about/api)
-- [Image Archive](https://epic.gsfc.nasa.gov/)
-
----
-
-## 📦 Archive
-All past images saved to the `/history/` folder by date.
-
----
-
-**Last updated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}  
-📸 Courtesy of NASA EPIC API
-""")
+    # Update log file
+    with open("update_log.txt", "w") as f:
+        f.write(f"Last updated: {datetime.now(timezone.utc).isoformat()}\n")
+        f.write(f"Image: {image_name}.jpg\n")
 
 if __name__ == "__main__":
     fetch_epic_image()
