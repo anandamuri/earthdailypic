@@ -73,5 +73,4 @@ All past images saved to the `/history/` folder by date.
 """)
 
 if __name__ == "__main__":
-    from datetime import timedelta
     fetch_epic_image()
