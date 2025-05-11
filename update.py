@@ -1,11 +1,11 @@
 import requests
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 API_KEY = os.getenv("NASA_API_KEY", "DEMO_KEY")
 
 def fetch_epic_image():
-    date = datetime.date.today() - datetime.timedelta(days=2)
+    date = datetime.now().date() - timedelta(days=2)
     date_str = date.strftime('%Y-%m-%d')
 
     # Get metadata
