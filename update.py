@@ -1,7 +1,7 @@
 import requests
 import datetime
 
-API_KEY = 'SmrpI2PL8Ahh38cgYqhGskeRpauFtKIERaubKBAT'
+API_KEY = 'DEMO_KEY'
 
 def fetch_epic_image():
     date = datetime.date.today() - datetime.timedelta(days=2)
