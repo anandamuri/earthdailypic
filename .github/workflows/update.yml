@@ -24,16 +24,15 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Export NASA API key
-        run: echo "NASA_API_KEY=${{ secrets.NASA_API_KEY }}" >> $GITHUB_ENV
-
       - name: Run update script
+        env:
+          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
         run: python update.py
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add README.md image.jpg
+          git add README.md image.jpg history/
           git commit -m "Update daily Earth image" || echo "No changes to commit"
           git push
