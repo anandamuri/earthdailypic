@@ -44,8 +44,9 @@ def fetch_epic_image():
         f.write(f"# 🌍 EPIC Earth Image of the Day\n\n")
         f.write(f"**Date:** {DATE_STR}\n\n")
         f.write(f"![Earth Image]({image_url})\n\n")
-        f.write(f"📸 Image name: `{image_name}.jpg`\n\n")
-        f.write(f"🕒 Last updated: {datetime.now(timezone.utc).isoformat()}\n\n")
+        f.write("**📍 Location:** Lagrange Point 1 (L1) — 1 million miles from Earth  \n")
+        f.write("**📷 Instrument:** EPIC (Earth Polychromatic Imaging Camera)  \n")
+        f.write(f"**🕒 Last updated:** {datetime.now(timezone.utc).isoformat()}\n\n")
         f.write("## Archive\n")
         f.write("Images stored in the [/history](./history) folder.\n")
 
