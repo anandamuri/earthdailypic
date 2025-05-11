@@ -31,10 +31,18 @@ def fetch_epic_image():
     with open("image.jpg", "wb") as f:
         f.write(img_data)
 
-    # Write README
-    with open("README.md", "w") as f:
-        f.write(f"""# 🌍 EPIC Earth Image of the Day
+    # Read existing README
+    with open("README.md", "r") as f:
+        readme = f.read()
 
+    # Define auto-update block
+    start_tag = "<!-- BEGIN AUTO-UPDATE -->"
+    end_tag = "<!-- END AUTO-UPDATE -->"
+
+    before = readme.split(start_tag)[0]
+    after = readme.split(end_tag)[1]
+
+    auto_content = f"""{start_tag}
 ![Earth Image]({image_url})
 
 **Date:** {date_str}  
@@ -47,7 +55,12 @@ Metadata:
 
 📸 Image provided by NASA EPIC API  
 🕒 Last updated: {datetime.now(timezone.utc).isoformat()}
-""")
+{end_tag}"""
+
+    # Combine and write back
+    new_readme = before + auto_content + after
+    with open("README.md", "w") as f:
+        f.write(new_readme)
 
 if __name__ == "__main__":
     fetch_epic_image()
