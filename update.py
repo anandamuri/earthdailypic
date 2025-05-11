@@ -43,19 +43,21 @@ def fetch_epic_image():
     after = readme.split(end_tag)[1]
 
     auto_content = f"""{start_tag}
-![Earth Image]({image_url})
+    <!-- This block is automatically updated by update.py every day -->
 
-**Date:** {date_str}  
-**Image Name:** {image_name}
+    ![Earth Image]({image_url})
 
-Metadata:
-```json
-{data[0]}
-```
+    **Date:** {date_str}  
+    **Image Name:** {image_name}
 
-📸 Image provided by NASA EPIC API  
-🕒 Last updated: {datetime.now(timezone.utc).isoformat()}
-{end_tag}"""
+    Metadata:
+    ```json
+    {data[0]}
+    📸 Image provided by NASA EPIC API
+    🕒 Last updated: {datetime.now(timezone.utc).isoformat()}
+
+    {end_tag}"""
+
 
     # Combine and write back
     new_readme = before + auto_content + after
