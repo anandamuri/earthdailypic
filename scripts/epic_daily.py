@@ -45,7 +45,7 @@ metadata = {
     "coords": latest["centroid_coordinates"]
 }
 
-readme_content = f"""# 🌍 Daily NASA EPIC Earth Image
+readme_content = f"""# Daily 🌍 Image
 
 ![Earth Image](./{HISTORY_DIR}/{filename})
 
@@ -53,7 +53,38 @@ readme_content = f"""# 🌍 Daily NASA EPIC Earth Image
 **Caption:** {metadata['caption']}  
 **Centroid Coordinates:** (Lat: {metadata['coords']['lat']}, Lon: {metadata['coords']['lon']})
 
-*Updated daily using NASA's EPIC API.*
+*Updated daily using NASA's EPIC API.*  
+Imagery © NASA EPIC / DSCOVR  
+This repo is powered by a GitHub Actions workflow that automates the entire process.
+
+---
+
+## 🛰️ What it does
+
+- Runs automatically every day at 12:00 UTC  
+- Fetches NASA's Earth image via the EPIC API  
+- Updates this README with space imagery and descriptions  
+- Commits and pushes these changes automatically  
+
+## 🧠 Why I built this
+
+This project showcases:
+
+- GitHub Actions and CI/CD workflows  
+- Automation scripts  
+- Git operations from within workflows  
+- Working with external APIs  
+
+## ⚙️ How it works
+
+The GitHub Action workflow:
+
+1. Runs on a schedule (daily)  
+2. Fetches NASA's EPIC Earth Image of the Day  
+3. Updates this README  
+4. Commits and pushes the changes  
+
+_Last updated: {datetime.utcnow().strftime('%a %b %d %H:%M:%S UTC %Y')}_
 """
 
 with open(README_FILE, "w", encoding="utf-8") as f:
