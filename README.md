@@ -1,9 +1,15 @@
-# Daily 🌍 Image
-    <img src="./history/2025-05-15/162534.jpg" alt="Earth at 16:25:34" width="400" title="This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft"><br>
-    <sub><strong>16:25:34 UTC</strong></sub><br>
-    <sub>19.445801, -79.49707</sub>
+# Daily 🌍 Image Closest to Ann Arbor, MI
 
-## Updated using NASA's EPIC API
+![Earth Image](./history/2025-05-15/162534.jpg)
+
+**Time (UTC):** 16:25:34  
+**Coordinates:** Latitude 19.445801, Longitude -79.49707  
+**Caption:** This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft
+
+---
+
+## Credits
+Updated using NASA's EPIC API 
 Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
@@ -15,12 +21,12 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 
 ## Why I built this
 
-- GitHub Actions and workflows
-- Automation scripts
-- Git operations from within workflows
-- Working with external APIs
+- GitHub Actions and workflows  
+- Automation scripts  
+- Git operations from within workflows  
+- Working with external APIs  
 - Show the side of the Earth with Michigan
- 
+
 ## How it works
 
 1. Fetches all available EPIC images  
@@ -28,4 +34,4 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 3. Saves the image  
 4. Updates this README  
 
-_Last updated: Fri May 16 15:38:14 UTC 2025_
+_Last updated: Fri May 16 15:41:00 UTC 2025_
