@@ -73,7 +73,8 @@ readme_content = f"""# Daily 🌍 Image Closest to Ann Arbor, MI
 
 ---
 
-*Updated using NASA's EPIC API*  
+## Credits
+Updated using NASA's EPIC API 
 Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
