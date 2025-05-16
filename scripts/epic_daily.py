@@ -67,8 +67,8 @@ readme_content = f"""# Daily 🌍 Image Closest to Ann Arbor, MI
 
 ![Earth Image]({image_rel_path})
 
-**Time (UTC):** {time_str}  
-**Coordinates:** Latitude {coords.get("lat")}, Longitude {coords.get("lon")}  
+**Time:** {time_str} UTC
+**Coordinates:** {coords.get("lat")}, {coords.get("lon")}  
 **Caption:** {caption}
 
 ---
@@ -94,10 +94,10 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 
 ## How it works
 
-1. Fetches all available EPIC images  
-2. Finds the one closest to Ann Arbor using centroid coordinates  
-3. Saves the image  
-4. Updates this README  
+- Fetches all available EPIC images  
+- Finds the one closest to Ann Arbor using centroid coordinates  
+- Saves the image  
+- Updates this README  
 
 _Last updated: {datetime.now(timezone.utc).strftime('%a %b %d %H:%M:%S UTC %Y')}_
 """
