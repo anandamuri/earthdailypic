@@ -23,7 +23,7 @@ if not data:
 
 # === PREPARE IMAGE BLOCK ===
 readme_images = []
-readme_images.append('<div style="display: flex; overflow-x: auto; gap: 12px; padding: 1rem 0;">')
+readme_images.append('<div style="display: inline-flex; overflow-x: auto; width: 100%; gap: 12px; padding: 1rem 0;">')
 
 # Limit number of images shown (e.g., 15 most recent)
 for entry in data[:15]:
@@ -53,7 +53,7 @@ for entry in data[:15]:
     caption = entry.get("caption", "")
     readme_images.append(
         f"""
-        <div style="min-width: 300px;">
+        <div style="flex: 0 0 auto; text-align: center;">
             <img src="{image_rel_path}" alt="Earth at {time_str}" width="300" title="{caption}"><br>
             <sub><strong>{time_str} UTC</strong></sub>
         </div>
@@ -63,7 +63,7 @@ for entry in data[:15]:
 readme_images.append('</div>')
 
 # === BUILD README CONTENT ===
-readme_content = f"""# Daily 🌍 Earth Images
+readme_content = f"""# Daily 🌍 Images
 
 {''.join(readme_images)}
 
@@ -84,7 +84,7 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 
 This project showcases:
 
-- GitHub Actions and CI/CD workflows  
+- GitHub Actions and workflows  
 - Automation scripts  
 - Git operations from within workflows  
 - Working with external APIs  
@@ -93,7 +93,7 @@ This project showcases:
 
 The GitHub Action workflow:
 
-1. Runs on a schedule (daily)  
+1. Runs daily on schedule  
 2. Fetches NASA's EPIC Earth Images of the Day  
 3. Updates this README  
 4. Commits and pushes the changes  
