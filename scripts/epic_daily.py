@@ -44,7 +44,6 @@ for entry in data:
     print(f"✅ Downloaded {filename}")
 
     # Add to README block
-    caption = entry.get("caption", "No caption available.")
     coords = entry.get("centroid_coordinates", {})
     readme_images.append(
         f"### {date_obj.strftime('%H:%M:%S')} UTC\n"
