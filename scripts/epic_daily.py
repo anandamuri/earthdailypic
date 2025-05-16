@@ -63,17 +63,17 @@ time_str = date_obj.strftime('%H:%M:%S')
 caption = closest_entry.get("caption", "")
 coords = closest_entry.get("centroid_coordinates", {})
 
-readme_content = f"""# Daily 🌍 Image Closest to Ann Arbor, MI
+readme_content = f"""# Daily 🌍 Image
 
 <div style="text-align: center;">
     <img src="{image_rel_path}" alt="Earth at {time_str}" width="400" title="{caption}"><br>
     <sub><strong>{time_str} UTC</strong></sub><br>
-    <sub>Lat: {coords.get("lat")}, Lon: {coords.get("lon")}</sub>
+    <sub>{coords.get("lat")}, {coords.get("lon")}</sub>
 </div>
 
 ---
 
-*Updated using NASA's EPIC API*  
+Updated using NASA's EPIC API
 Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
@@ -85,8 +85,12 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 
 ## Why I built this
 
-To highlight Earth's view near Ann Arbor using real-time NASA data, automated with GitHub Actions.
-
+- GitHub Actions and workflows
+- Automation scripts
+- Git operations from within workflows
+- Working with external APIs
+- Show the side of the Earth with Michigan
+ 
 ## How it works
 
 1. Fetches all available EPIC images  
