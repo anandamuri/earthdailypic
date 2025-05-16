@@ -10,7 +10,7 @@ IMAGE_BASE_URL = "https://epic.gsfc.nasa.gov/archive/natural"
 HISTORY_DIR = "history"
 README_FILE = "README.md"
 
-# === CREATE FOLDER ===
+# === CREATE MAIN HISTORY FOLDER ===
 Path(HISTORY_DIR).mkdir(exist_ok=True)
 
 # === FETCH LATEST IMAGE METADATA ===
@@ -27,9 +27,13 @@ for entry in data:
     date_str = entry['date']
     date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
     date_path = date_obj.strftime("%Y/%m/%d")
-    filename = f"{date_obj.strftime('%Y-%m-%d_%H%M%S')}_{image_name}.jpg"
+
+    # === NEW STRUCTURE: history/YYYY-MM-DD/HHMMSS.jpg ===
+    day_folder = os.path.join(HISTORY_DIR, date_obj.strftime("%Y-%m-%d"))
+    Path(day_folder).mkdir(parents=True, exist_ok=True)
+    filename = f"{date_obj.strftime('%H%M%S')}.jpg"
     image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
-    image_path = os.path.join(HISTORY_DIR, filename)
+    image_path = os.path.join(day_folder, filename)
 
     # Download image
     img_response = requests.get(image_url)
@@ -43,8 +47,8 @@ for entry in data:
     caption = entry.get("caption", "No caption available.")
     coords = entry.get("centroid_coordinates", {})
     readme_images.append(
-        f"###{date_obj.strftime('%H:%M:%S')} UTC\n"
-        f"![Earth Image](./{HISTORY_DIR}/{filename})\n"
+        f"### {date_obj.strftime('%H:%M:%S')} UTC\n"
+        f"![Earth Image](./{day_folder}/{filename})\n"
         f"**Caption:** {caption}  \n"
         f"**Centroid Coordinates:** (Lat: {coords.get('lat', 'N/A')}, Lon: {coords.get('lon', 'N/A')})\n\n"
     )
@@ -60,7 +64,7 @@ readme_content = f"""# Daily 🌍 Earth Images
 Imagery © NASA EPIC / DSCOVR  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
-##What it does
+## What it does
 
 - Runs automatically every day at 9:00 UTC  
 - Fetches NASA's Earth images via the EPIC API  
