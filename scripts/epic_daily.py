@@ -1,6 +1,6 @@
 import os
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # === CONFIG ===
@@ -85,7 +85,7 @@ The GitHub Action workflow:
 3. Updates this README  
 4. Commits and pushes the changes  
 
-_Last updated: {datetime.utcnow().strftime('%a %b %d %H:%M:%S UTC %Y')}_
+_Last updated: {datetime.now(timezone.utc).strftime('%a %b %d %H:%M:%S UTC %Y')}_
 """
 
 # === WRITE TO README ===
