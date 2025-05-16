@@ -21,48 +21,49 @@ data = response.json()
 if not data:
     raise Exception("No image data found from EPIC API.")
 
-latest = data[0]
-image_name = latest['image']
-date_str = latest['date']
-date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
-date_path = date_obj.strftime("%Y/%m/%d")
-filename = f"{date_obj.strftime('%Y-%m-%d')}_{image_name}.jpg"
-image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
-image_path = os.path.join(HISTORY_DIR, filename)
+readme_images = []
+for entry in data:
+    image_name = entry['image']
+    date_str = entry['date']
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+    date_path = date_obj.strftime("%Y/%m/%d")
+    filename = f"{date_obj.strftime('%Y-%m-%d_%H%M%S')}_{image_name}.jpg"
+    image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
+    image_path = os.path.join(HISTORY_DIR, filename)
 
-# === DOWNLOAD IMAGE ===
-img_response = requests.get(image_url)
-img_response.raise_for_status()
-with open(image_path, 'wb') as f:
-    f.write(img_response.content)
+    # Download image
+    img_response = requests.get(image_url)
+    img_response.raise_for_status()
+    with open(image_path, 'wb') as f:
+        f.write(img_response.content)
 
-print(f"✅ Downloaded image to: {os.path.abspath(image_path)}")
+    print(f"✅ Downloaded {filename}")
 
-# === UPDATE README ===
-metadata = {
-    "date": date_obj.strftime("%Y-%m-%d"),
-    "caption": latest.get("caption", "No caption available."),
-    "coords": latest["centroid_coordinates"]
-}
+    # Add to README block
+    caption = entry.get("caption", "No caption available.")
+    coords = entry.get("centroid_coordinates", {})
+    readme_images.append(
+        f"### 🕒 {date_obj.strftime('%H:%M:%S')} UTC\n"
+        f"![Earth Image](./{HISTORY_DIR}/{filename})\n"
+        f"**Caption:** {caption}  \n"
+        f"**Centroid Coordinates:** (Lat: {coords.get('lat', 'N/A')}, Lon: {coords.get('lon', 'N/A')})\n\n"
+    )
 
-readme_content = f"""# Daily 🌍 Image
+# === BUILD README CONTENT ===
+readme_content = f"""# Daily 🌍 Earth Images
 
-![Earth Image](./{HISTORY_DIR}/{filename})
-
-**Date:** {metadata['date']}  
-**Caption:** {metadata['caption']}  
-**Centroid Coordinates:** (Lat: {metadata['coords']['lat']}, Lon: {metadata['coords']['lon']})
-
-*Updated daily using NASA's EPIC API.*  
-Imagery © NASA EPIC / DSCOVR  
-This repo is powered by a GitHub Actions workflow that automates the entire process.
+{''.join(readme_images)}
 
 ---
 
+*Updated using NASA's EPIC API*  
+Imagery © NASA EPIC / DSCOVR  
+This repo is powered by a GitHub Actions workflow that automates the entire process.
+
 ## 🛰️ What it does
 
-- Runs automatically every day at 12:00 UTC  
-- Fetches NASA's Earth image via the EPIC API  
+- Runs automatically every day at 9:00 UTC  
+- Fetches NASA's Earth images via the EPIC API  
 - Updates this README with space imagery and descriptions  
 - Commits and pushes these changes automatically  
 
@@ -80,13 +81,14 @@ This project showcases:
 The GitHub Action workflow:
 
 1. Runs on a schedule (daily)  
-2. Fetches NASA's EPIC Earth Image of the Day  
+2. Fetches NASA's EPIC Earth Images of the Day  
 3. Updates this README  
 4. Commits and pushes the changes  
 
 _Last updated: {datetime.utcnow().strftime('%a %b %d %H:%M:%S UTC %Y')}_
 """
 
+# === WRITE TO README ===
 with open(README_FILE, "w", encoding="utf-8") as f:
     f.write(readme_content)
 
