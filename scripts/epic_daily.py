@@ -63,12 +63,17 @@ time_str = date_obj.strftime('%H:%M:%S')
 caption = closest_entry.get("caption", "")
 coords = closest_entry.get("centroid_coordinates", {})
 
-readme_content = f"""# Daily 🌍 Image
-    <img src="{image_rel_path}" alt="Earth at {time_str}" width="400" title="{caption}"><br>
-    <sub><strong>{time_str} UTC</strong></sub><br>
-    <sub>{coords.get("lat")}, {coords.get("lon")}</sub>
+readme_content = f"""# Daily 🌍 Image Closest to Ann Arbor, MI
 
-## Updated using NASA's EPIC API
+![Earth Image]({image_rel_path})
+
+**Time (UTC):** {time_str}  
+**Coordinates:** Latitude {coords.get("lat")}, Longitude {coords.get("lon")}  
+**Caption:** {caption}
+
+---
+
+*Updated using NASA's EPIC API*  
 Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
@@ -80,12 +85,12 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 
 ## Why I built this
 
-- GitHub Actions and workflows
-- Automation scripts
-- Git operations from within workflows
-- Working with external APIs
+- GitHub Actions and workflows  
+- Automation scripts  
+- Git operations from within workflows  
+- Working with external APIs  
 - Show the side of the Earth with Michigan
- 
+
 ## How it works
 
 1. Fetches all available EPIC images  
@@ -101,7 +106,6 @@ with open(README_FILE, "w", encoding="utf-8") as f:
     f.write(readme_content)
 
 print("✅ README.md updated.")
-
 
 
 # make sure any changes you make first git pull -rebase, remove all files from history, then rerun action to test
