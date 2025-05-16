@@ -21,23 +21,22 @@ data = response.json()
 if not data:
     raise Exception("No image data found from EPIC API.")
 
-latest = data[0]  # Most recent image
+latest = data[0]
 image_name = latest['image']
-date_str = latest['date']  # format: 'YYYY-MM-DD HH:MM:SS'
+date_str = latest['date']
 date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
 date_path = date_obj.strftime("%Y/%m/%d")
 filename = f"{date_obj.strftime('%Y-%m-%d')}_{image_name}.jpg"
 image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
+image_path = os.path.join(HISTORY_DIR, filename)
 
 # === DOWNLOAD IMAGE ===
-image_path = os.path.join(HISTORY_DIR, filename)
 img_response = requests.get(image_url)
 img_response.raise_for_status()
-
 with open(image_path, 'wb') as f:
     f.write(img_response.content)
 
-print(f"Downloaded image to {image_path}")
+print(f"✅ Downloaded image to {image_path}")
 
 # === UPDATE README ===
 metadata = {
@@ -60,4 +59,4 @@ readme_content = f"""# 🌍 Daily NASA EPIC Earth Image
 with open(README_FILE, "w", encoding="utf-8") as f:
     f.write(readme_content)
 
-print("README.md updated.")
+print("✅ README.md updated.")

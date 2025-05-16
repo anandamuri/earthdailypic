@@ -2,8 +2,8 @@ name: Update EPIC Earth Image
 
 on:
   schedule:
-    - cron: '0 9 * * *' # 5 AM EST (which is 9 AM UTC)
-  workflow_dispatch: # allows manual trigger
+    - cron: '0 9 * * *'  # 5 AM EST = 9 AM UTC
+  workflow_dispatch:  # allow manual run
 
 jobs:
   update-daily-image:
@@ -27,6 +27,7 @@ jobs:
         env:
           NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
         run: |
+          echo "✅ Running epic_daily.py..."
           python scripts/epic_daily.py
 
       - name: Commit and push if changes
