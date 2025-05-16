@@ -36,7 +36,7 @@ img_response.raise_for_status()
 with open(image_path, 'wb') as f:
     f.write(img_response.content)
 
-print(f"✅ Downloaded image to {image_path}")
+print(f"✅ Downloaded image to: {os.path.abspath(image_path)}")
 
 # === UPDATE README ===
 metadata = {
