@@ -8,6 +8,7 @@
 ---
 
 ## Credits
+
 -Updated using NASA's EPIC API 
 -Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
 -This repo is powered by a GitHub Actions workflow that automates the entire process.
@@ -33,4 +34,4 @@
 - Saves the image  
 - Updates this README  
 
-_Last updated: Fri May 16 15:47:48 UTC 2025_
+_Last updated: Fri May 16 15:48:47 UTC 2025_
