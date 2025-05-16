@@ -43,7 +43,7 @@ for entry in data:
     caption = entry.get("caption", "No caption available.")
     coords = entry.get("centroid_coordinates", {})
     readme_images.append(
-        f"### 🕒 {date_obj.strftime('%H:%M:%S')} UTC\n"
+        f"###{date_obj.strftime('%H:%M:%S')} UTC\n"
         f"![Earth Image](./{HISTORY_DIR}/{filename})\n"
         f"**Caption:** {caption}  \n"
         f"**Centroid Coordinates:** (Lat: {coords.get('lat', 'N/A')}, Lon: {coords.get('lon', 'N/A')})\n\n"
@@ -60,14 +60,14 @@ readme_content = f"""# Daily 🌍 Earth Images
 Imagery © NASA EPIC / DSCOVR  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
-## 🛰️ What it does
+##What it does
 
 - Runs automatically every day at 9:00 UTC  
 - Fetches NASA's Earth images via the EPIC API  
 - Updates this README with space imagery and descriptions  
 - Commits and pushes these changes automatically  
 
-## 🧠 Why I built this
+## Why I built this
 
 This project showcases:
 
