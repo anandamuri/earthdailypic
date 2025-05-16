@@ -1,8 +1,7 @@
-# Daily 🌍 Image Closest to Ann Arbor, MI
+# Daily 🌍 Image
 
 ![Earth Image](./history/2025-05-15/162534.jpg)
 
-**Time:** 16:25:34 UTC
 **Coordinates:** 19.445801, -79.49707  
 **Caption:** This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft
 
@@ -34,4 +33,4 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 - Saves the image  
 - Updates this README  
 
-_Last updated: Fri May 16 15:44:53 UTC 2025_
+_Last updated: Fri May 16 15:46:15 UTC 2025_
