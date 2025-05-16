@@ -73,9 +73,9 @@ readme_content = f"""# Daily 🌍 Image
 ---
 
 ## Credits
-Updated using NASA's EPIC API 
-Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
-This repo is powered by a GitHub Actions workflow that automates the entire process.
+-Updated using NASA's EPIC API 
+-Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
+-This repo is powered by a GitHub Actions workflow that automates the entire process.
 
 ## What it does
 
