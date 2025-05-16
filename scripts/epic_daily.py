@@ -64,7 +64,7 @@ readme_content = f"""# Daily 🌍 Earth Images
 Imagery © NASA EPIC / DSCOVR  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
-## What it does
+##What it does
 
 - Runs automatically every day at 9:00 UTC  
 - Fetches NASA's Earth images via the EPIC API  
@@ -80,7 +80,7 @@ This project showcases:
 - Git operations from within workflows  
 - Working with external APIs  
 
-## ⚙️ How it works
+## How it works
 
 The GitHub Action workflow:
 
