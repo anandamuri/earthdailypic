@@ -49,7 +49,6 @@ for entry in data:
     readme_images.append(
         f"### {date_obj.strftime('%H:%M:%S')} UTC\n"
         f"![Earth Image](./{day_folder}/{filename})\n"
-        f"**Caption:** {caption}  \n"
         f"**Centroid Coordinates:** (Lat: {coords.get('lat', 'N/A')}, Lon: {coords.get('lon', 'N/A')})\n\n"
     )
 
@@ -61,7 +60,7 @@ readme_content = f"""# Daily 🌍 Earth Images
 ---
 
 *Updated using NASA's EPIC API*  
-Imagery © NASA EPIC / DSCOVR  
+Imagery © NASA EPIC / NOAA DSCOVR spacecraft 
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
 ##What it does
