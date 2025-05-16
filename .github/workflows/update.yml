@@ -34,7 +34,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase
+          git pull --rebase --autostash
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "Daily update: $(date -u +'%Y-%m-%d')"
+          git diff --quiet && git diff --staged --quiet || git commit -m "🔄 Daily update: $(date -u +'%Y-%m-%d')"
           git push
+
