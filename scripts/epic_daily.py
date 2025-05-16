@@ -10,6 +10,9 @@ IMAGE_BASE_URL = "https://epic.gsfc.nasa.gov/archive/natural"
 HISTORY_DIR = "history"
 README_FILE = "README.md"
 
+ANN_ARBOR_LAT = 42.2808
+ANN_ARBOR_LON = -83.7430
+
 # === CREATE MAIN HISTORY FOLDER ===
 Path(HISTORY_DIR).mkdir(exist_ok=True)
 
@@ -21,51 +24,52 @@ data = response.json()
 if not data:
     raise Exception("No image data found from EPIC API.")
 
-# === PREPARE IMAGE BLOCK ===
-readme_images = []
-readme_images.append('<div style="display: inline-flex; overflow-x: auto; width: 100%; gap: 12px; padding: 1rem 0;">')
+# === Find image closest to Ann Arbor ===
+def distance(coord1, coord2):
+    return (coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2
 
-# Limit number of images shown (e.g., 15 most recent)
-for entry in data[:15]:
-    image_name = entry['image']
-    date_str = entry['date']
-    date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
-    date_path = date_obj.strftime("%Y/%m/%d")
-
-    # === STRUCTURE: history/YYYY-MM-DD/HHMMSS.jpg ===
-    day_folder = os.path.join(HISTORY_DIR, date_obj.strftime("%Y-%m-%d"))
-    Path(day_folder).mkdir(parents=True, exist_ok=True)
-    filename = f"{date_obj.strftime('%H%M%S')}.jpg"
-    image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
-    image_path = os.path.join(day_folder, filename)
-
-    # Download image
-    img_response = requests.get(image_url)
-    img_response.raise_for_status()
-    with open(image_path, 'wb') as f:
-        f.write(img_response.content)
-
-    print(f"✅ Downloaded {filename}")
-
-    # Add to scrollable gallery block
-    image_rel_path = f"./{day_folder}/{filename}"
-    time_str = date_obj.strftime('%H:%M:%S')
-    caption = entry.get("caption", "")
-    readme_images.append(
-        f"""
-        <div style="flex: 0 0 auto; text-align: center;">
-            <img src="{image_rel_path}" alt="Earth at {time_str}" width="300" title="{caption}"><br>
-            <sub><strong>{time_str} UTC</strong></sub>
-        </div>
-        """
+target_coord = (ANN_ARBOR_LAT, ANN_ARBOR_LON)
+closest_entry = min(
+    data,
+    key=lambda entry: distance(
+        (entry["centroid_coordinates"]["lat"], entry["centroid_coordinates"]["lon"]),
+        target_coord
     )
+)
 
-readme_images.append('</div>')
+# === PROCESS SELECTED IMAGE ===
+image_name = closest_entry['image']
+date_str = closest_entry['date']
+date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+date_path = date_obj.strftime("%Y/%m/%d")
 
-# === BUILD README CONTENT ===
-readme_content = f"""# Daily 🌍 Images
+day_folder = os.path.join(HISTORY_DIR, date_obj.strftime("%Y-%m-%d"))
+Path(day_folder).mkdir(parents=True, exist_ok=True)
+filename = f"{date_obj.strftime('%H%M%S')}.jpg"
+image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
+image_path = os.path.join(day_folder, filename)
 
-{''.join(readme_images)}
+# Download image
+img_response = requests.get(image_url)
+img_response.raise_for_status()
+with open(image_path, 'wb') as f:
+    f.write(img_response.content)
+
+print(f"✅ Downloaded {filename} (closest to Ann Arbor)")
+
+# === PREPARE README IMAGE BLOCK ===
+image_rel_path = f"./{day_folder}/{filename}"
+time_str = date_obj.strftime('%H:%M:%S')
+caption = closest_entry.get("caption", "")
+coords = closest_entry.get("centroid_coordinates", {})
+
+readme_content = f"""# Daily 🌍 Image Closest to Ann Arbor, MI
+
+<div style="text-align: center;">
+    <img src="{image_rel_path}" alt="Earth at {time_str}" width="400" title="{caption}"><br>
+    <sub><strong>{time_str} UTC</strong></sub><br>
+    <sub>Lat: {coords.get("lat")}, Lon: {coords.get("lon")}</sub>
+</div>
 
 ---
 
@@ -75,28 +79,20 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 
 ## What it does
 
-- Runs automatically every day at 9:00 UTC  
-- Fetches NASA's Earth images via the EPIC API  
-- Updates this README with space imagery and descriptions  
-- Commits and pushes these changes automatically  
+- Runs daily at 9:00 UTC  
+- Downloads the EPIC image closest to Ann Arbor, Michigan  
+- Updates this README with the latest image and its metadata  
 
 ## Why I built this
 
-This project showcases:
-
-- GitHub Actions and workflows  
-- Automation scripts  
-- Git operations from within workflows  
-- Working with external APIs  
+To highlight Earth's view near Ann Arbor using real-time NASA data, automated with GitHub Actions.
 
 ## How it works
 
-The GitHub Action workflow:
-
-1. Runs daily on schedule  
-2. Fetches NASA's EPIC Earth Images of the Day  
-3. Updates this README  
-4. Commits and pushes the changes  
+1. Fetches all available EPIC images  
+2. Finds the one closest to Ann Arbor using centroid coordinates  
+3. Saves the image  
+4. Updates this README  
 
 _Last updated: {datetime.now(timezone.utc).strftime('%a %b %d %H:%M:%S UTC %Y')}_
 """
@@ -106,6 +102,7 @@ with open(README_FILE, "w", encoding="utf-8") as f:
     f.write(readme_content)
 
 print("✅ README.md updated.")
+
 
 
 # make sure any changes you make first git pull -rebase, remove all files from history, then rerun action to test
