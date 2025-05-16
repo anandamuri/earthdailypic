@@ -63,11 +63,10 @@ time_str = date_obj.strftime('%H:%M:%S')
 caption = closest_entry.get("caption", "")
 coords = closest_entry.get("centroid_coordinates", {})
 
-readme_content = f"""# Daily 🌍 Image Closest to Ann Arbor, MI
+readme_content = f"""# Daily 🌍 Image
 
 ![Earth Image]({image_rel_path})
 
-**Time:** {time_str} UTC
 **Coordinates:** {coords.get("lat")}, {coords.get("lon")}  
 **Caption:** {caption}
 
