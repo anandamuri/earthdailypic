@@ -110,4 +110,4 @@ with open(README_FILE, "w", encoding="utf-8") as f:
 print("✅ README.md updated.")
 
 
-# make sure any changes you make first git pull -rebase, remove all files from history, then rerun action to test
+# make sure any changes you make first git pull -rebase, remove all files from history, then rerun the action to test
