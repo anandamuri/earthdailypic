@@ -63,7 +63,7 @@ time_str = date_obj.strftime('%H:%M:%S')
 caption = closest_entry.get("caption", "")
 coords = closest_entry.get("centroid_coordinates", {})
 
-readme_content = f"""# Daily 🌍 Image
+readme_content = f"""# Daily 🌎 Image
 
 ![Earth Image]({image_rel_path})
 
