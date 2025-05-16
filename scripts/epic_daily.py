@@ -64,16 +64,11 @@ caption = closest_entry.get("caption", "")
 coords = closest_entry.get("centroid_coordinates", {})
 
 readme_content = f"""# Daily 🌍 Image
-
-<div style="text-align: center;">
     <img src="{image_rel_path}" alt="Earth at {time_str}" width="400" title="{caption}"><br>
     <sub><strong>{time_str} UTC</strong></sub><br>
     <sub>{coords.get("lat")}, {coords.get("lon")}</sub>
-</div>
 
----
-
-Updated using NASA's EPIC API
+## Updated using NASA's EPIC API
 Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
