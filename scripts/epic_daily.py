@@ -87,7 +87,8 @@ readme_content = f"""# Daily 🌍 Image
 ## Why I built this
 
 - GitHub Actions and workflows  
-- Automation scripts  
+- Automation scripts 
+- Python scripts
 - Git operations from within workflows  
 - Working with external APIs  
 - Show the side of the Earth with Michigan
