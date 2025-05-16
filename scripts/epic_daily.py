@@ -21,14 +21,18 @@ data = response.json()
 if not data:
     raise Exception("No image data found from EPIC API.")
 
+# === PREPARE IMAGE BLOCK ===
 readme_images = []
-for entry in data:
+readme_images.append('<div style="display: flex; overflow-x: auto; gap: 12px; padding: 1rem 0;">')
+
+# Limit number of images shown (e.g., 15 most recent)
+for entry in data[:15]:
     image_name = entry['image']
     date_str = entry['date']
     date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
     date_path = date_obj.strftime("%Y/%m/%d")
 
-    # === NEW STRUCTURE: history/YYYY-MM-DD/HHMMSS.jpg ===
+    # === STRUCTURE: history/YYYY-MM-DD/HHMMSS.jpg ===
     day_folder = os.path.join(HISTORY_DIR, date_obj.strftime("%Y-%m-%d"))
     Path(day_folder).mkdir(parents=True, exist_ok=True)
     filename = f"{date_obj.strftime('%H%M%S')}.jpg"
@@ -43,13 +47,20 @@ for entry in data:
 
     print(f"✅ Downloaded {filename}")
 
-    # Add to README block
-    coords = entry.get("centroid_coordinates", {})
+    # Add to scrollable gallery block
+    image_rel_path = f"./{day_folder}/{filename}"
+    time_str = date_obj.strftime('%H:%M:%S')
+    caption = entry.get("caption", "")
     readme_images.append(
-        f"### {date_obj.strftime('%H:%M:%S')} UTC\n"
-        f"![Earth Image](./{day_folder}/{filename})\n"
-        f"**Centroid Coordinates:** (Lat: {coords.get('lat', 'N/A')}, Lon: {coords.get('lon', 'N/A')})\n\n"
+        f"""
+        <div style="min-width: 300px;">
+            <img src="{image_rel_path}" alt="Earth at {time_str}" width="300" title="{caption}"><br>
+            <sub><strong>{time_str} UTC</strong></sub>
+        </div>
+        """
     )
+
+readme_images.append('</div>')
 
 # === BUILD README CONTENT ===
 readme_content = f"""# Daily 🌍 Earth Images
@@ -59,10 +70,10 @@ readme_content = f"""# Daily 🌍 Earth Images
 ---
 
 *Updated using NASA's EPIC API*  
-Imagery © NASA EPIC / NOAA DSCOVR spacecraft 
+Imagery © NASA EPIC / NOAA DSCOVR spacecraft  
 This repo is powered by a GitHub Actions workflow that automates the entire process.
 
-##What it does
+## What it does
 
 - Runs automatically every day at 9:00 UTC  
 - Fetches NASA's Earth images via the EPIC API  
@@ -95,3 +106,6 @@ with open(README_FILE, "w", encoding="utf-8") as f:
     f.write(readme_content)
 
 print("✅ README.md updated.")
+
+
+# make sure any changes you make first git pull -rebase, remove all files from history, then rerun action to test
