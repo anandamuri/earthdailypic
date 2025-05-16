@@ -2,8 +2,8 @@
 
 ![Earth Image](./history/2025-05-15/162534.jpg)
 
-**Time (UTC):** 16:25:34  
-**Coordinates:** Latitude 19.445801, Longitude -79.49707  
+**Time:** 16:25:34 UTC
+**Coordinates:** 19.445801, -79.49707  
 **Caption:** This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft
 
 ---
@@ -29,9 +29,9 @@ This repo is powered by a GitHub Actions workflow that automates the entire proc
 
 ## How it works
 
-1. Fetches all available EPIC images  
-2. Finds the one closest to Ann Arbor using centroid coordinates  
-3. Saves the image  
-4. Updates this README  
+- Fetches all available EPIC images  
+- Finds the one closest to Ann Arbor using centroid coordinates  
+- Saves the image  
+- Updates this README  
 
-_Last updated: Fri May 16 15:41:00 UTC 2025_
+_Last updated: Fri May 16 15:43:21 UTC 2025_
