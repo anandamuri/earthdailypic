@@ -15,7 +15,7 @@
 
 ## What it does
 
-- Runs daily at 9:00 UTC  
+- Runs daily at 13:00 UTC  
 - Downloads the EPIC image closest to Ann Arbor, Michigan  
 - Updates this README with the latest image and its metadata  
 
@@ -35,4 +35,4 @@
 - Saves the image  
 - Updates this README  
 
-_Last updated: Sat May 17 13:45:29 UTC 2025_
+_Last updated: Sat May 17 13:48:16 UTC 2025_
