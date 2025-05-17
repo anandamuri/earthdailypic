@@ -1,7 +1,8 @@
 import os
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from time import sleep
 
 # === CONFIG ===
 API_KEY = os.getenv("NASA_API_KEY", "DEMO_KEY")
@@ -16,13 +17,32 @@ ANN_ARBOR_LON = -83.7430
 # === CREATE MAIN HISTORY FOLDER ===
 Path(HISTORY_DIR).mkdir(exist_ok=True)
 
-# === FETCH LATEST IMAGE METADATA ===
-response = requests.get(f"{EPIC_API_URL}?api_key={API_KEY}")
-response.raise_for_status()
-data = response.json()
+# === RETRY LOGIC FOR PREVIOUS DAY'S IMAGE ===
+target_date = (datetime.now(timezone.utc) - timedelta(days=1)).date()
+max_attempts = 6  # Retry for up to 6 hours
+interval_secs = 3600  # Wait 1 hour between retries
 
-if not data:
-    raise Exception("No image data found from EPIC API.")
+def fetch_metadata_for_date(date):
+    url = f"{EPIC_API_URL}/date/{date}?api_key={API_KEY}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        if data:
+            return data
+    return None
+
+print(f"📅 Trying to fetch EPIC image metadata for {target_date}")
+data = None
+for attempt in range(max_attempts):
+    data = fetch_metadata_for_date(target_date)
+    if data:
+        print(f"✅ Found metadata on attempt {attempt + 1}")
+        break
+    if attempt < max_attempts - 1:
+        print(f"⏳ Metadata not ready yet, retrying in 1 hour...")
+        sleep(interval_secs)
+    else:
+        raise Exception(f"❌ No EPIC image metadata found for {target_date} after {max_attempts} attempts")
 
 # === Find image closest to Ann Arbor ===
 def distance(coord1, coord2):
@@ -50,12 +70,14 @@ image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
 image_path = os.path.join(day_folder, filename)
 
 # Download image
-img_response = requests.get(image_url)
-img_response.raise_for_status()
-with open(image_path, 'wb') as f:
-    f.write(img_response.content)
-
-print(f"✅ Downloaded {filename} (closest to Ann Arbor)")
+try:
+    img_response = requests.get(image_url)
+    img_response.raise_for_status()
+    with open(image_path, 'wb') as f:
+        f.write(img_response.content)
+    print(f"✅ Downloaded {filename} (closest to Ann Arbor)")
+except requests.exceptions.RequestException as e:
+    raise Exception(f"❌ Failed to download image: {e}")
 
 # === PREPARE README IMAGE BLOCK ===
 image_rel_path = f"./{day_folder}/{filename}"
