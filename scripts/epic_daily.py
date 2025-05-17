@@ -102,7 +102,7 @@ readme_content = f"""# Daily 🌎 Image
 
 ## What it does
 
-- Runs daily at 9:00 UTC  
+- Runs daily at 13:00 UTC  
 - Downloads the EPIC image closest to Ann Arbor, Michigan  
 - Updates this README with the latest image and its metadata  
 
