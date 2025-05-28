@@ -116,6 +116,7 @@ readme_content = f"""# Daily 🌎 Image
 - Runs daily at 13:00 UTC  
 - Downloads the EPIC image closest to Ann Arbor, Michigan  
 - Updates this README with the latest image and its metadata  
+- If NASA's EPIC API does not publish a new image, the script will display the most recent available image.
 
 ## Why I built this
 
