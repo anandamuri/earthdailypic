@@ -2,8 +2,8 @@
 
 ![Earth Image](./history/2025-05-25/161612.jpg)
 
-**Coordinates:** 19.987793, -76.325684  
-**Caption:** This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft
+**Coordinates:** 42.2808, -83.743  
+**Caption:** Fallback image from previous successful day.
 
 ---
 
@@ -35,4 +35,4 @@
 - Saves the image  
 - Updates this README  
 
-_Last updated: Mon May 26 13:31:12 UTC 2025_
+_Last updated: Wed May 28 19:30:24 UTC 2025_
