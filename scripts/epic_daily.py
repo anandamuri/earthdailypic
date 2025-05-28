@@ -2,7 +2,6 @@ import os
 import requests
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from time import sleep
 
 # === CONFIG ===
 API_KEY = os.getenv("NASA_API_KEY", "DEMO_KEY")
@@ -17,11 +16,6 @@ ANN_ARBOR_LON = -83.7430
 # === CREATE MAIN HISTORY FOLDER ===
 Path(HISTORY_DIR).mkdir(exist_ok=True)
 
-# === RETRY LOGIC FOR PREVIOUS DAY'S IMAGE ===
-target_date = (datetime.now(timezone.utc) - timedelta(days=1)).date()
-max_attempts = 6  # Retry for up to 6 hours
-interval_secs = 3600  # Wait 1 hour between retries
-
 def fetch_metadata_for_date(date):
     url = f"{EPIC_API_URL}/date/{date}?api_key={API_KEY}"
     response = requests.get(url)
@@ -31,53 +25,70 @@ def fetch_metadata_for_date(date):
             return data
     return None
 
+# === Try yesterday's metadata first ===
+target_date = (datetime.now(timezone.utc) - timedelta(days=1)).date()
 print(f"📅 Trying to fetch EPIC image metadata for {target_date}")
-data = None
-for attempt in range(max_attempts):
-    data = fetch_metadata_for_date(target_date)
-    if data:
-        print(f"✅ Found metadata on attempt {attempt + 1}")
-        break
-    if attempt < max_attempts - 1:
-        print(f"⏳ Metadata not ready yet, retrying in 1 hour...")
-        sleep(interval_secs)
+data = fetch_metadata_for_date(target_date)
+
+if not data:
+    print(f"❌ No EPIC metadata for {target_date}. Using most recent image from history...")
+    subfolders = sorted(Path(HISTORY_DIR).iterdir(), reverse=True)
+    for folder in subfolders:
+        if folder.is_dir():
+            image_files = list(folder.glob("*.jpg"))
+            if image_files:
+                image_path = image_files[0]
+                date_obj = datetime.strptime(folder.name, "%Y-%m-%d")
+                filename = image_path.name
+                image_name = filename.replace(".jpg", "")
+                target_date = date_obj
+                day_folder = folder
+                print(f"📁 Using fallback image from {folder.name}")
+                break
     else:
-        raise Exception(f"❌ No EPIC image metadata found for {target_date} after {max_attempts} attempts")
+        raise Exception("❌ No fallback image found in history folder.")
 
-# === Find image closest to Ann Arbor ===
-def distance(coord1, coord2):
-    return (coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2
+    # Populate fake metadata fields
+    closest_entry = {
+        "image": image_name,
+        "date": date_obj.strftime("%Y-%m-%d %H:%M:%S"),
+        "caption": "Fallback image from previous successful day.",
+        "centroid_coordinates": {"lat": ANN_ARBOR_LAT, "lon": ANN_ARBOR_LON}
+    }
 
-target_coord = (ANN_ARBOR_LAT, ANN_ARBOR_LON)
-closest_entry = min(
-    data,
-    key=lambda entry: distance(
-        (entry["centroid_coordinates"]["lat"], entry["centroid_coordinates"]["lon"]),
-        target_coord
+else:
+    print(f"✅ Found metadata for {target_date}")
+    def distance(coord1, coord2):
+        return (coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2
+
+    target_coord = (ANN_ARBOR_LAT, ANN_ARBOR_LON)
+    closest_entry = min(
+        data,
+        key=lambda entry: distance(
+            (entry["centroid_coordinates"]["lat"], entry["centroid_coordinates"]["lon"]),
+            target_coord
+        )
     )
-)
 
-# === PROCESS SELECTED IMAGE ===
-image_name = closest_entry['image']
-date_str = closest_entry['date']
-date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
-date_path = date_obj.strftime("%Y/%m/%d")
+    image_name = closest_entry['image']
+    date_str = closest_entry['date']
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+    date_path = date_obj.strftime("%Y/%m/%d")
+    day_folder = os.path.join(HISTORY_DIR, date_obj.strftime("%Y-%m-%d"))
+    Path(day_folder).mkdir(parents=True, exist_ok=True)
+    filename = f"{date_obj.strftime('%H%M%S')}.jpg"
+    image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
+    image_path = os.path.join(day_folder, filename)
 
-day_folder = os.path.join(HISTORY_DIR, date_obj.strftime("%Y-%m-%d"))
-Path(day_folder).mkdir(parents=True, exist_ok=True)
-filename = f"{date_obj.strftime('%H%M%S')}.jpg"
-image_url = f"{IMAGE_BASE_URL}/{date_path}/jpg/{image_name}.jpg"
-image_path = os.path.join(day_folder, filename)
-
-# Download image
-try:
-    img_response = requests.get(image_url)
-    img_response.raise_for_status()
-    with open(image_path, 'wb') as f:
-        f.write(img_response.content)
-    print(f"✅ Downloaded {filename} (closest to Ann Arbor)")
-except requests.exceptions.RequestException as e:
-    raise Exception(f"❌ Failed to download image: {e}")
+    # Download image
+    try:
+        img_response = requests.get(image_url, timeout=15)
+        img_response.raise_for_status()
+        with open(image_path, 'wb') as f:
+            f.write(img_response.content)
+        print(f"✅ Downloaded {filename} (closest to Ann Arbor)")
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"❌ Failed to download image: {e}")
 
 # === PREPARE README IMAGE BLOCK ===
 image_rel_path = f"./{day_folder}/{filename}"
@@ -130,6 +141,3 @@ with open(README_FILE, "w", encoding="utf-8") as f:
     f.write(readme_content)
 
 print("✅ README.md updated.")
-
-
-# make sure any changes you make first git pull -rebase, remove all files from history, then rerun the action to test
