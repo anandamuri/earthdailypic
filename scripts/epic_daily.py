@@ -1,5 +1,7 @@
+
 import os
 import requests
+import random
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -9,9 +11,6 @@ EPIC_API_URL = "https://api.nasa.gov/EPIC/api/natural"
 IMAGE_BASE_URL = "https://epic.gsfc.nasa.gov/archive/natural"
 HISTORY_DIR = "history"
 README_FILE = "README.md"
-
-ANN_ARBOR_LAT = 42.2808
-ANN_ARBOR_LON = -83.7430
 
 # === CREATE MAIN HISTORY FOLDER ===
 Path(HISTORY_DIR).mkdir(exist_ok=True)
@@ -53,22 +52,13 @@ if not data:
         "image": image_name,
         "date": date_obj.strftime("%Y-%m-%d %H:%M:%S"),
         "caption": "Fallback image from previous successful day.",
-        "centroid_coordinates": {"lat": ANN_ARBOR_LAT, "lon": ANN_ARBOR_LON}
+        "centroid_coordinates": {"lat": 0.0, "lon": 0.0}
     }
 
 else:
     print(f"✅ Found metadata for {target_date}")
-    def distance(coord1, coord2):
-        return (coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2
-
-    target_coord = (ANN_ARBOR_LAT, ANN_ARBOR_LON)
-    closest_entry = min(
-        data,
-        key=lambda entry: distance(
-            (entry["centroid_coordinates"]["lat"], entry["centroid_coordinates"]["lon"]),
-            target_coord
-        )
-    )
+    closest_entry = random.choice(data)
+    print(f"🎲 Random image selected: {closest_entry['image']} at {closest_entry['centroid_coordinates']}")
 
     image_name = closest_entry['image']
     date_str = closest_entry['date']
@@ -86,7 +76,7 @@ else:
         img_response.raise_for_status()
         with open(image_path, 'wb') as f:
             f.write(img_response.content)
-        print(f"✅ Downloaded {filename} (closest to Ann Arbor)")
+        print(f"✅ Downloaded {filename} (random Earth image)")
     except requests.exceptions.RequestException as e:
         raise Exception(f"❌ Failed to download image: {e}")
 
@@ -114,7 +104,7 @@ readme_content = f"""# Daily 🌎 Image
 ## What it does
 
 - Runs daily at 13:00 UTC  
-- Downloads the EPIC image closest to Ann Arbor, Michigan  
+- Downloads a random EPIC image of Earth  
 - Updates this README with the latest image and its metadata  
 - If NASA's EPIC API does not publish a new image, the script will display the most recent available image.
 
@@ -125,12 +115,12 @@ readme_content = f"""# Daily 🌎 Image
 - Python scripts
 - Git operations from within workflows  
 - Working with external APIs  
-- Show the side of the Earth with Michigan
+- Show a daily random image of Earth
 
 ## How it works
 
 - Fetches all available EPIC images  
-- Finds the one closest to Ann Arbor using centroid coordinates  
+- Picks one at random  
 - Saves the image  
 - Updates this README  
 
