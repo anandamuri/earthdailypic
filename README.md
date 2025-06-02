@@ -1,8 +1,8 @@
 # Daily 🌎 Image
 
-![Earth Image](./history/2025-06-01/031042.jpg)
+![Earth Image](./history/2025-06-01/151043.jpg)
 
-**Coordinates:** 20.031738, 121.428223  
+**Coordinates:** 20.002441, -58.483887  
 **Caption:** This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft
 
 ---
@@ -16,7 +16,7 @@
 ## What it does
 
 - Runs daily at 13:00 UTC  
-- Downloads the EPIC image closest to Ann Arbor, Michigan  
+- Downloads a random EPIC image of Earth  
 - Updates this README with the latest image and its metadata  
 - If NASA's EPIC API does not publish a new image, the script will display the most recent available image.
 
@@ -27,13 +27,13 @@
 - Python scripts
 - Git operations from within workflows  
 - Working with external APIs  
-- Show the side of the Earth with Michigan
+- Show a daily random image of Earth
 
 ## How it works
 
 - Fetches all available EPIC images  
-- Finds the one closest to Ann Arbor using centroid coordinates  
+- Picks one at random  
 - Saves the image  
 - Updates this README  
 
-_Last updated: Mon Jun 02 13:34:11 UTC 2025_
+_Last updated: Mon Jun 02 19:23:13 UTC 2025_
