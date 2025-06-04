@@ -1,6 +1,7 @@
 
 import os
 import requests
+import json
 import random
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -48,12 +49,20 @@ if not data:
         raise Exception("❌ No fallback image found in history folder.")
 
     # Populate fake metadata fields
-    closest_entry = {
-        "image": image_name,
-        "date": date_obj.strftime("%Y-%m-%d %H:%M:%S"),
-        "caption": "Fallback image from previous successful day.",
-        "centroid_coordinates": {"lat": 0.0, "lon": 0.0}
-    }
+# Try loading metadata from fallback folder
+    metadata_file = image_path.with_suffix('.json')
+    if metadata_file.exists():
+        with open(metadata_file, 'r', encoding='utf-8') as f:
+            closest_entry = json.load(f)
+        print(f"📝 Loaded metadata for fallback image.")
+    else:
+        print(f"⚠️ No metadata file found for fallback image. Using placeholder values.")
+        closest_entry = {
+            "image": image_name,
+            "date": date_obj.strftime("%Y-%m-%d %H:%M:%S"),
+            "caption": "Fallback image from previous successful day.",
+            "centroid_coordinates": {"lat": 0.0, "lon": 0.0}
+        }
 
 else:
     print(f"✅ Found metadata for {target_date}")
@@ -77,6 +86,10 @@ else:
         with open(image_path, 'wb') as f:
             f.write(img_response.content)
         print(f"✅ Downloaded {filename} (random Earth image)")
+    # Save metadata
+        metadata_path = os.path.join(day_folder, f"{date_obj.strftime('%H%M%S')}.json")
+        with open(metadata_path, 'w', encoding='utf-8') as meta_file:
+            json.dump(closest_entry, meta_file, indent=2)
     except requests.exceptions.RequestException as e:
         raise Exception(f"❌ Failed to download image: {e}")
 
