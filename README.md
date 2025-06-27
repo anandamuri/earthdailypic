@@ -1,8 +1,8 @@
 # Daily 🌎 Image
 
-![Earth Image](./history/2025-06-24/190845.jpg)
+![Earth Image](./history/2025-06-26/183626.jpg)
 
-**Coordinates:** 17.753906, -110.500488  
+**Coordinates:** 17.424316, -101.623535  
 **Caption:** This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft
 
 ---
@@ -40,4 +40,4 @@
 
 - NASA updates some day's photos more than a day after, so need to account for latency. 
 
-_Last updated: Thu Jun 26 13:34:53 UTC 2025_
+_Last updated: Fri Jun 27 13:33:01 UTC 2025_
