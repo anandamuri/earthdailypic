@@ -40,4 +40,4 @@
 
 - NASA updates some day's photos more than a day after, so need to account for latency. 
 
-_Last updated: Wed Jul 16 13:39:36 UTC 2025_
+_Last updated: Thu Jul 17 13:39:08 UTC 2025_
