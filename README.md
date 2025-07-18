@@ -39,5 +39,6 @@
 ## Things to improve
 
 - NASA updates some day's photos more than a day after, so need to account for latency. 
+- Solved by saving and pulling from API photos history.
 
-_Last updated: Thu Jul 17 13:39:08 UTC 2025_
+_Last updated: Fri Jul 18 13:38:26 UTC 2025_
