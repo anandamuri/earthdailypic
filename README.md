@@ -41,4 +41,9 @@
 - NASA updates some day's photos more than a day after, so need to account for latency. 
 - Solved by saving and pulling from API photos history.
 
-_Last updated: Sun Aug 10 13:31:47 UTC 2025_
+## Satellite damage
+
+- The satellite that takes these pictures is damaged as of July 15th.
+- NASA is working on fixing it.
+
+_Last updated: Mon Aug 11 13:40:12 UTC 2025_
